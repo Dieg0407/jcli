@@ -5,9 +5,10 @@ import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import java.util.concurrent.Callable;
 
+import dieg0407.tools.jcli.commands.NewCommand;
 import dieg0407.tools.jcli.models.Engine;
 
-@Command(name = "jcli", mixinStandardHelpOptions = true, version = "1.0.0")
+@Command(name = "jcli", mixinStandardHelpOptions = true, version = "1.0.0", subcommands = { NewCommand.class })
 public class JcliApplication implements Callable<Integer> {
 
   @Option(names = { "-v",
@@ -20,13 +21,16 @@ public class JcliApplication implements Callable<Integer> {
 
   @Override
   public Integer call() throws Exception {
-    System.out.println(verbose);
-    System.out.println(engine);
-    return 0;
+    System.err.println("You need to specify a subcommand.");
+    return 1;
   }
 
   public static void main(String[] args) {
     int exitCode = new CommandLine(new JcliApplication()).execute(args);
     System.exit(exitCode);
+  }
+
+  public Engine getEngine() {
+    return engine;
   }
 }
