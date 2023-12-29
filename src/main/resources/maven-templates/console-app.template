@@ -76,7 +76,7 @@
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>libs/</classpathPrefix>
                             <mainClass>
-                                dieg0407.tools.jcli.JcliApplication
+                               ${groupId}.ConsoleApplication
                             </mainClass>
                         </manifest>
                     </archive>

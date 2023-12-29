@@ -2,11 +2,13 @@ package dieg0407.tools.jcli.commands;
 
 import dieg0407.tools.jcli.JcliApplication;
 import dieg0407.tools.jcli.models.Template;
+import dieg0407.tools.jcli.services.MavenNewProjectService;
+import dieg0407.tools.jcli.validators.GroupIdValidator;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 import picocli.CommandLine.ParentCommand;
-import java.util.concurrent.Callable; // Import the Callable class
+import java.util.concurrent.Callable;
 
 @Command(name = "new", mixinStandardHelpOptions = true, version = "1.0.0")
 public class NewCommand implements Callable<Integer> {
@@ -27,11 +29,12 @@ public class NewCommand implements Callable<Integer> {
 
   @Override
   public Integer call() throws Exception {
-    System.err.println(parent.getEngine());
-    System.err.println(template);
-    System.err.println(artifactId);
-    System.err.println(groupId);
-    System.err.println(version);
+    final var service = MavenNewProjectService.getInstance();
+    if (!GroupIdValidator.isValid(groupId)) {
+      System.out.println("Invalid groupId.");
+      return 1;
+    }
+    service.createConsoleApp(artifactId, groupId, version);
     return 0;
   }
 
