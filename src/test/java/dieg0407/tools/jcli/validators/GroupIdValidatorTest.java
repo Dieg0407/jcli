@@ -68,7 +68,7 @@ public class GroupIdValidatorTest {
       "com.while", // 'while'
       ""
   })
-  public void shouldNotBeValid(String groupId) {
+  void shouldNotBeValid(String groupId) {
     final var isValid = GroupIdValidator.isValid(groupId);
     assertThat(isValid).isFalse();
   }
@@ -79,7 +79,7 @@ public class GroupIdValidatorTest {
       "int_.example",
       "com.example._123name"
   })
-  public void shouldBeValid(String groupId) {
+  void shouldBeValid(String groupId) {
     final var isValid = GroupIdValidator.isValid(groupId);
     assertThat(isValid).isTrue();
   }

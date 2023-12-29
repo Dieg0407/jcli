@@ -29,11 +29,20 @@ public class NewCommand implements Callable<Integer> {
 
   @Override
   public Integer call() throws Exception {
-    final var service = MavenNewProjectService.getInstance();
-    if (!GroupIdValidator.isValid(groupId)) {
+    if (groupId == null || !GroupIdValidator.isValid(groupId)) {
       System.out.println("Invalid groupId.");
-      return 1;
+      return ErrorCodes.INVALID_GROUP_ID_ERROR_CODE;
     }
+    if (artifactId == null || artifactId.isBlank()) {
+      System.out.println("Invalid artifactId.");
+      return ErrorCodes.INVALID_ARTIFACT_ID_ERROR_CODE;
+    }
+    if(version == null || version.isBlank()) {
+      System.out.println("Invalid version.");
+      return ErrorCodes.INVALID_VERSION_ERROR_CODE;
+    }
+
+    final var service = MavenNewProjectService.getInstance();
     service.createConsoleApp(artifactId, groupId, version);
     return 0;
   }
