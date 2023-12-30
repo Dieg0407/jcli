@@ -19,7 +19,8 @@ public class MavenCentralApiImpl implements MavenCentralApi {
 
   @Override
   public List<MavenCentralDependency> query(String artifactId, String groupId) {
-    try (final var client = HttpClient.newHttpClient()) {
+    try {
+      final var client = HttpClient.newHttpClient();
       final var query = String.format("?q=a:%s+AND+g:%s&rows=20&wt=json", artifactId, groupId);
       final var request = HttpRequest.newBuilder()
           .GET()
