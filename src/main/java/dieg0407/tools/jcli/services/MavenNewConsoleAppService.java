@@ -1,5 +1,6 @@
 package dieg0407.tools.jcli.services;
 
+import static dieg0407.tools.jcli.services.LongOperationWrapper.wrap;
 import static java.lang.String.format;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,6 +12,7 @@ import dieg0407.tools.jcli.engines.MavenEngine;
 import dieg0407.tools.jcli.services.FileHandler.Result;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Optional;
 
 public class MavenNewConsoleAppService implements NewConsoleAppService {
 
@@ -55,19 +57,25 @@ public class MavenNewConsoleAppService implements NewConsoleAppService {
       return;
     }
 
-    createPom(artifactId, groupId, version);
+    var pomCreationResult = wrap(() -> createPom(artifactId, groupId, version), "Attempting to create pom.xml... ");
+    if (pomCreationResult.isPresent()) {
+      System.err.println("Unable to create pom.xml ❌");
+      pomCreationResult.get().printStackTrace(System.err);
+      return;
+    }
     System.err.println("Pom generated successfully ✔️");
 
-    var engineCommandResult = engine.generateWrapper(workdir);
+    var engineCommandResult = wrap(() -> engine.generateWrapper(workdir), "Attempting to generate maven wrapper... ");
     if (!engineCommandResult.ok()) {
       System.err.println("Unable to generate maven wrapper ❌");
       engineCommandResult.exception().printStackTrace(System.err);
+      return;
     }
 
     System.err.println("Maven wrapper generated successfully ✔️");
   }
 
-  private void createPom(String artifactId, String groupId, String version) {
+  private Optional<Exception> createPom(String artifactId, String groupId, String version) {
     try {
       // fetch junit latest version
       final var junit5 = versionResolver.queryLatestVersion("junit-jupiter", "org.junit.jupiter");
@@ -99,8 +107,9 @@ public class MavenNewConsoleAppService implements NewConsoleAppService {
           .replace("${className}", "ConsoleApplication");
 
       fileHandler.writeToFile(Path.of(srcDir.toString(), "ConsoleApplication.java"), mainClass);
+      return Optional.empty();
     } catch (IOException e) {
-      throw new RuntimeException(e);
+      return Optional.of(new RuntimeException(e));
     }
   }
 }

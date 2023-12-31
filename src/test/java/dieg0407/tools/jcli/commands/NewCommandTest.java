@@ -18,7 +18,7 @@ public class NewCommandTest {
     newCommand.groupId = "com.example";
     newCommand.artifactId = "example";
     newCommand.version = "1.0.0";
-    newCommand.template = Template.CONSOLE_APP;
+    newCommand.template = Template.console_app;
   }
 
   @ParameterizedTest
