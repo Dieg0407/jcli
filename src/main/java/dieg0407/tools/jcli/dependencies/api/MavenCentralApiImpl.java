@@ -1,4 +1,4 @@
-package dieg0407.tools.jcli.services.dependencies.api;
+package dieg0407.tools.jcli.dependencies.api;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,7 +28,9 @@ public class MavenCentralApiImpl implements MavenCentralApi {
           .build();
       final var result = client.send(request, HttpResponse.BodyHandlers.ofString());
       if (result.statusCode() != 200) {
-        throw new RuntimeException("Error while querying maven central: " + result.body() + " with status code: " + result.statusCode());
+        throw new RuntimeException(
+            "Error while querying maven central: " + result.body() + " with status code: "
+                + result.statusCode());
       }
       final var content = result.body();
       final var response = mapper.readTree(content);

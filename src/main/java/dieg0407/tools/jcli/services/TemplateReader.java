@@ -1,4 +1,4 @@
-package dieg0407.tools.jcli.services.templates;
+package dieg0407.tools.jcli.services;
 
 import java.io.IOException;
 

@@ -5,9 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import dieg0407.tools.jcli.directory.FileHandler;
 import dieg0407.tools.jcli.directory.FileHandler.Result;
-import dieg0407.tools.jcli.models.Dependency;
-import dieg0407.tools.jcli.services.dependencies.VersionResolver;
-import dieg0407.tools.jcli.services.templates.TemplateReader;
+import dieg0407.tools.jcli.dependencies.models.Dependency;
+import dieg0407.tools.jcli.dependencies.VersionResolver;
 import java.nio.file.Path;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;

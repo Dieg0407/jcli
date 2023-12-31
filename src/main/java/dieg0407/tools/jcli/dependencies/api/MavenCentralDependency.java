@@ -1,4 +1,4 @@
-package dieg0407.tools.jcli.services.dependencies.api;
+package dieg0407.tools.jcli.dependencies.api;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -1,9 +1,9 @@
-package dieg0407.tools.jcli.services.dependencies;
+package dieg0407.tools.jcli.dependencies;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dieg0407.tools.jcli.services.dependencies.api.MavenCentralApiImpl;
+import dieg0407.tools.jcli.dependencies.api.MavenCentralApiImpl;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;

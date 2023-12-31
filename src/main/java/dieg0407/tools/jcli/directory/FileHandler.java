@@ -7,7 +7,7 @@ import java.nio.file.Path;
 
 public interface FileHandler {
 
-  default Result createFolder(File folder)  {
+  default Result createFolder(File folder) {
     if (folder.exists()) {
       return Result.ALREADY_EXISTS;
     }

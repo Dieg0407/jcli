@@ -1,8 +1,8 @@
-package dieg0407.tools.jcli.services.dependencies;
+package dieg0407.tools.jcli.dependencies;
 
-import dieg0407.tools.jcli.models.Dependency;
-import dieg0407.tools.jcli.services.dependencies.api.MavenCentralApi;
-import dieg0407.tools.jcli.services.dependencies.api.MavenCentralDependency;
+import dieg0407.tools.jcli.dependencies.api.MavenCentralApi;
+import dieg0407.tools.jcli.dependencies.api.MavenCentralDependency;
+import dieg0407.tools.jcli.dependencies.models.Dependency;
 import java.util.Optional;
 
 public class MavenCentralRepository implements VersionResolver {

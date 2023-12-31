@@ -3,14 +3,12 @@ package dieg0407.tools.jcli.services;
 import static java.lang.String.format;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dieg0407.tools.jcli.dependencies.MavenCentralRepository;
+import dieg0407.tools.jcli.dependencies.VersionResolver;
+import dieg0407.tools.jcli.dependencies.api.MavenCentralApiImpl;
 import dieg0407.tools.jcli.directory.FileHandler;
 import dieg0407.tools.jcli.directory.FileHandler.Result;
-import dieg0407.tools.jcli.services.dependencies.MavenCentralRepository;
-import dieg0407.tools.jcli.services.dependencies.VersionResolver;
-import dieg0407.tools.jcli.services.dependencies.api.MavenCentralApiImpl;
-import dieg0407.tools.jcli.services.templates.TemplateReader;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 
 public class MavenNewProjectService implements NewProjectService {
@@ -31,8 +29,10 @@ public class MavenNewProjectService implements NewProjectService {
   public static NewProjectService getInstance() {
     final var api = new MavenCentralApiImpl(new ObjectMapper());
     final var resolver = new MavenCentralRepository(api);
-    final var templateReader = new TemplateReader() {};
-    final var fileHandler = new FileHandler() {};
+    final var templateReader = new TemplateReader() {
+    };
+    final var fileHandler = new FileHandler() {
+    };
     return new MavenNewProjectService(templateReader, resolver, fileHandler);
   }
 
