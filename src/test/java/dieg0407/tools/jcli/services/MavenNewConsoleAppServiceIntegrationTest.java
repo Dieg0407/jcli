@@ -3,6 +3,7 @@ package dieg0407.tools.jcli.services;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import dieg0407.tools.jcli.FolderDeleter;
+import java.io.IOException;
 import java.nio.file.Path;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -11,25 +12,29 @@ import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 
 @TestInstance(Lifecycle.PER_CLASS)
-public class MavenNewProjectServiceIntegrationTest {
+public class MavenNewConsoleAppServiceIntegrationTest {
 
-  NewProjectService newProjectService;
+  NewConsoleAppService newConsoleAppService;
 
   static final String PROJECT_NAME = "test-project";
+  static final Path PROJECT_PATH = Path.of(PROJECT_NAME);
 
   @BeforeAll
-  void beforeAll() {
-    newProjectService = MavenNewProjectService.getInstance();
+  void beforeAll() throws IOException {
+    if (PROJECT_PATH.toFile().exists()) {
+      FolderDeleter.deleteFolder(PROJECT_PATH);
+    }
+    newConsoleAppService = MavenNewConsoleAppService.getInstance();
   }
 
   @AfterAll
   void afterAll() throws Exception {
-    FolderDeleter.deleteFolder(Path.of(PROJECT_NAME));
+    FolderDeleter.deleteFolder(PROJECT_PATH);
   }
 
   @Test
   void shouldCreateConsoleAppArchetype() {
-    newProjectService.createConsoleApp(PROJECT_NAME, "com.demo", "1.0.0-SNAPSHOT");
+    newConsoleAppService.createConsoleApp(PROJECT_NAME, "com.demo", "1.0.0-SNAPSHOT");
 
     // validate existence of src/main/java/com/demo/ConsoleApplication.java
     final var file = Path.of(PROJECT_NAME, "src", "main", "java", "com", "demo",
@@ -39,5 +44,12 @@ public class MavenNewProjectServiceIntegrationTest {
     // validate existence of pom.xml
     final var pom = Path.of(PROJECT_NAME, "pom.xml");
     assertThat(pom).exists();
+    // validate existence of wrapper folder and files
+    final var wrapper = Path.of(PROJECT_NAME, "mvnw");
+    assertThat(wrapper).exists();
+    final var wrapperWindows = Path.of(PROJECT_NAME, "mvnw.cmd");
+    assertThat(wrapperWindows).exists();
+    final var wrapperFolder = Path.of(PROJECT_NAME, ".mvn");
+    assertThat(wrapperFolder).exists();
   }
 }

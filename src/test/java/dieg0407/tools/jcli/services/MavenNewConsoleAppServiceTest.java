@@ -7,15 +7,17 @@ import dieg0407.tools.jcli.directory.FileHandler;
 import dieg0407.tools.jcli.directory.FileHandler.Result;
 import dieg0407.tools.jcli.dependencies.models.Dependency;
 import dieg0407.tools.jcli.dependencies.VersionResolver;
+import dieg0407.tools.jcli.engines.CommandResult;
+import dieg0407.tools.jcli.engines.Engine;
 import java.nio.file.Path;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
-public class MavenNewProjectServiceTest {
+public class MavenNewConsoleAppServiceTest {
 
-  MavenNewProjectService projectService;
+  MavenNewConsoleAppService projectService;
 
   TemplateReader templateReader;
 
@@ -23,12 +25,15 @@ public class MavenNewProjectServiceTest {
 
   FileHandler fileHandler;
 
+  Engine engine;
+
   @BeforeEach
   void init() {
     templateReader = Mockito.mock(TemplateReader.class);
     versionResolver = Mockito.mock(VersionResolver.class);
     fileHandler = Mockito.mock(FileHandler.class);
-    projectService = new MavenNewProjectService(templateReader, versionResolver, fileHandler);
+    engine = Mockito.mock(Engine.class);
+    projectService = new MavenNewConsoleAppService(templateReader, versionResolver, fileHandler, engine);
   }
 
   @Test
@@ -109,14 +114,17 @@ public class MavenNewProjectServiceTest {
     Mockito.when(versionResolver.queryLatestVersion("junit-jupiter", "org.junit.jupiter"))
         .thenReturn(
             Optional.of(new Dependency("junit-jupiter", "org.junit.jupiter", junit5Version)));
-
+    final var workdir = Path.of(artifact);
+    Mockito.when(engine.generateWrapper(workdir.toFile())).thenReturn(new CommandResult(true, null));
     projectService.createConsoleApp(artifact, groupId, version);
 
     Mockito.verify(fileHandler).writeToFile(Path.of(artifact, "pom.xml"), finalPom);
     Mockito.verify(fileHandler).writeToFile(Path.of(artifact, "src", "main", "java", "test", "demo", "ConsoleApplication.java"), finalClass);
     Mockito.verify(fileHandler).createFolder(Path.of(artifact, "src", "main", "java", "test", "demo").toFile());
     Mockito.verify(fileHandler).createFolder(Path.of(artifact, "src", "main", "resources").toFile());
-    Mockito.verify(fileHandler).createFolder(Path.of(artifact, "src", "test", "java", "test", "demo").toFile());
+    Mockito.verify(fileHandler).createFolder(
+        Path.of(artifact, "src", "test", "java", "test", "demo").toFile());
     Mockito.verify(fileHandler).createFolder(Path.of(artifact, "src", "test", "resources").toFile());
+    Mockito.verify(engine).generateWrapper(workdir.toFile());
   }
 }

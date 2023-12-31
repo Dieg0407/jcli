@@ -29,8 +29,4 @@ public class JcliApplication implements Callable<Integer> {
     int exitCode = new CommandLine(new JcliApplication()).execute(args);
     System.exit(exitCode);
   }
-
-  public EngineType getEngine() {
-    return engine;
-  }
 }

@@ -2,7 +2,7 @@ package dieg0407.tools.jcli.commands;
 
 import dieg0407.tools.jcli.JcliApplication;
 import dieg0407.tools.jcli.commands.models.Template;
-import dieg0407.tools.jcli.services.MavenNewProjectService;
+import dieg0407.tools.jcli.services.MavenNewConsoleAppService;
 import dieg0407.tools.jcli.validators.GroupIdValidator;
 import java.util.concurrent.Callable;
 import picocli.CommandLine.Command;
@@ -45,7 +45,7 @@ public class NewCommand implements Callable<Integer> {
       return ErrorCodes.INVALID_VERSION_ERROR_CODE;
     }
 
-    final var service = MavenNewProjectService.getInstance();
+    final var service = MavenNewConsoleAppService.getInstance();
     service.createConsoleApp(artifactId, groupId, version);
     return 0;
   }

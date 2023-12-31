@@ -8,10 +8,12 @@ import dieg0407.tools.jcli.dependencies.VersionResolver;
 import dieg0407.tools.jcli.dependencies.api.MavenCentralApiImpl;
 import dieg0407.tools.jcli.directory.FileHandler;
 import dieg0407.tools.jcli.directory.FileHandler.Result;
+import dieg0407.tools.jcli.engines.Engine;
+import dieg0407.tools.jcli.engines.MavenEngine;
 import java.io.IOException;
 import java.nio.file.Path;
 
-public class MavenNewProjectService implements NewProjectService {
+public class MavenNewConsoleAppService implements NewConsoleAppService {
 
   public static final String MAVEN_TEMPLATES = "maven-templates";
 
@@ -19,26 +21,30 @@ public class MavenNewProjectService implements NewProjectService {
   private final VersionResolver versionResolver;
   private final FileHandler fileHandler;
 
-  public MavenNewProjectService(TemplateReader templateReader, VersionResolver versionResolver,
-      FileHandler fileHandler) {
+  private final Engine engine;
+
+  public MavenNewConsoleAppService(TemplateReader templateReader, VersionResolver versionResolver,
+      FileHandler fileHandler, Engine engine) {
     this.templateReader = templateReader;
     this.versionResolver = versionResolver;
     this.fileHandler = fileHandler;
+    this.engine = engine;
   }
 
-  public static NewProjectService getInstance() {
+  public static NewConsoleAppService getInstance() {
     final var api = new MavenCentralApiImpl(new ObjectMapper());
     final var resolver = new MavenCentralRepository(api);
     final var templateReader = new TemplateReader() {
     };
     final var fileHandler = new FileHandler() {
     };
-    return new MavenNewProjectService(templateReader, resolver, fileHandler);
+    final var engine = new MavenEngine();
+    return new MavenNewConsoleAppService(templateReader, resolver, fileHandler, engine);
   }
 
   @Override
   public void createConsoleApp(String artifactId, String groupId, String version) {
-    System.err.println("Creating a new Maven project...");
+    System.err.println("Creating a new Maven project... ⏳");
     final var workdir = Path.of(artifactId).toFile();
     final var result = fileHandler.createFolder(workdir);
     if (result == Result.ERROR || result == null) {
@@ -51,6 +57,15 @@ public class MavenNewProjectService implements NewProjectService {
     }
 
     createPom(artifactId, groupId, version);
+    System.err.println("Pom generated successfully ✔️");
+
+    var engineCommandResult = engine.generateWrapper(workdir);
+    if (!engineCommandResult.ok()) {
+      System.err.println("Unable to generate maven wrapper ❌");
+      engineCommandResult.exception().printStackTrace(System.err);
+    }
+
+    System.err.println("Maven wrapper generated successfully ✔️");
   }
 
   private void createPom(String artifactId, String groupId, String version) {
