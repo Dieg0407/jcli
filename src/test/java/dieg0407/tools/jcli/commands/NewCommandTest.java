@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 public class NewCommandTest {
+
   NewCommand newCommand;
 
   @BeforeEach
@@ -22,7 +23,7 @@ public class NewCommandTest {
 
   @ParameterizedTest
   @NullSource
-  @ValueSource(strings = { "int.example", "1234.example.org", "" })
+  @ValueSource(strings = {"int.example", "1234.example.org", ""})
   void validateGroupId(String invalidGroupIds) throws Exception {
     newCommand.groupId = invalidGroupIds;
     final var exitCode = newCommand.call();
@@ -31,7 +32,7 @@ public class NewCommandTest {
 
   @ParameterizedTest
   @NullSource
-  @ValueSource(strings = { "" })
+  @ValueSource(strings = {""})
   void validateArtifactId(String invalidArtifactId) throws Exception {
     newCommand.artifactId = invalidArtifactId;
     final var exitCode = newCommand.call();
@@ -40,7 +41,7 @@ public class NewCommandTest {
 
   @ParameterizedTest
   @NullSource
-  @ValueSource(strings = { "" })
+  @ValueSource(strings = {""})
   void validateVersion(String invalidVersion) throws Exception {
     newCommand.version = invalidVersion;
     final var exitCode = newCommand.call();

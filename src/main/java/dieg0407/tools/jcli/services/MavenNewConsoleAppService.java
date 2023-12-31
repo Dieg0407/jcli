@@ -6,10 +6,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dieg0407.tools.jcli.dependencies.MavenCentralRepository;
 import dieg0407.tools.jcli.dependencies.VersionResolver;
 import dieg0407.tools.jcli.dependencies.api.MavenCentralApiImpl;
-import dieg0407.tools.jcli.directory.FileHandler;
-import dieg0407.tools.jcli.directory.FileHandler.Result;
 import dieg0407.tools.jcli.engines.Engine;
 import dieg0407.tools.jcli.engines.MavenEngine;
+import dieg0407.tools.jcli.services.FileHandler.Result;
 import java.io.IOException;
 import java.nio.file.Path;
 
