@@ -1,4 +1,4 @@
-package dieg0407.tools.jcli.validators;
+package dieg0407.tools.jcli.commands.validators;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

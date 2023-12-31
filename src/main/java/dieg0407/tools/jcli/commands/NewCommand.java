@@ -3,7 +3,7 @@ package dieg0407.tools.jcli.commands;
 import dieg0407.tools.jcli.JcliApplication;
 import dieg0407.tools.jcli.commands.models.Template;
 import dieg0407.tools.jcli.services.MavenNewConsoleAppService;
-import dieg0407.tools.jcli.validators.GroupIdValidator;
+import dieg0407.tools.jcli.commands.validators.GroupIdValidator;
 import java.util.concurrent.Callable;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
