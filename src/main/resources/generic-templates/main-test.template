@@ -1,0 +1,14 @@
+package ${package};
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import org.junit.jupiter.api.Test;
+
+public class ${className} {
+
+   @Test
+   void test() {
+      String message = "Hello World!";
+      assertEquals("Hello World!", message);
+   }
+}

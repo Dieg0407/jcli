@@ -2,6 +2,9 @@ package dieg0407.tools.jcli.services;
 
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import dieg0407.tools.jcli.dependencies.VersionResolver;
 import dieg0407.tools.jcli.dependencies.models.Dependency;
@@ -28,10 +31,10 @@ public class MavenNewConsoleAppServiceTest {
 
   @BeforeEach
   void init() {
-    templateReader = Mockito.mock(TemplateReader.class);
-    versionResolver = Mockito.mock(VersionResolver.class);
-    fileHandler = Mockito.mock(FileHandler.class);
-    engine = Mockito.mock(Engine.class);
+    templateReader = mock(TemplateReader.class);
+    versionResolver = mock(VersionResolver.class);
+    fileHandler = mock(FileHandler.class);
+    engine = mock(Engine.class);
     projectService = new MavenNewConsoleAppService(templateReader, versionResolver, fileHandler,
         engine);
   }
@@ -40,9 +43,9 @@ public class MavenNewConsoleAppServiceTest {
   void shouldThrowRuntimeExceptionWhenJunitVersionCouldNotBeQueried() {
     final var artifact = "artifact";
     final var groupId = "test.demo";
-    Mockito.when(versionResolver.queryLatestVersion(artifact, groupId))
+    when(versionResolver.queryLatestVersion(artifact, groupId))
         .thenReturn(Optional.empty());
-    Mockito.when(fileHandler.createFolder(Path.of("artifact").toFile())).thenReturn(Result.CREATED);
+    when(fileHandler.createFolder(Path.of("artifact").toFile())).thenReturn(Result.CREATED);
 
     assertThatThrownBy(() ->
         projectService.createConsoleApp(artifact, groupId, "1.0.0-SNAPSHOT")
@@ -54,11 +57,11 @@ public class MavenNewConsoleAppServiceTest {
   void shouldNotCallVersionResolverIfWorkdirFailedToCreate() {
     final var artifact = "artifact";
     final var groupId = "test.demo";
-    Mockito.when(fileHandler.createFolder(Path.of("artifact").toFile())).thenReturn(Result.ERROR);
+    when(fileHandler.createFolder(Path.of("artifact").toFile())).thenReturn(Result.ERROR);
 
     projectService.createConsoleApp(artifact, groupId, "1.0.0-SNAPSHOT");
 
-    Mockito.verify(versionResolver, Mockito.never())
+    verify(versionResolver, Mockito.never())
         .queryLatestVersion(Mockito.anyString(), Mockito.anyString());
   }
 
@@ -66,12 +69,12 @@ public class MavenNewConsoleAppServiceTest {
   void shouldNotCallVersionResolverIfWorkdirAlreadyExists() {
     final var artifact = "artifact";
     final var groupId = "test.demo";
-    Mockito.when(fileHandler.createFolder(Path.of("artifact").toFile()))
+    when(fileHandler.createFolder(Path.of("artifact").toFile()))
         .thenReturn(Result.ALREADY_EXISTS);
 
     projectService.createConsoleApp(artifact, groupId, "1.0.0-SNAPSHOT");
 
-    Mockito.verify(versionResolver, Mockito.never())
+    verify(versionResolver, Mockito.never())
         .queryLatestVersion(Mockito.anyString(), Mockito.anyString());
   }
 
@@ -104,33 +107,48 @@ public class MavenNewConsoleAppServiceTest {
         ConsoleApplication
         """;
 
-    Mockito.when(fileHandler.createFolder(Path.of("artifact").toFile()))
+    final var testClassTemplate = """
+        ${package}
+        ${className}
+        """;
+    final var finalTestClass = """
+        test.demo
+        ConsoleApplicationTest
+        """;
+
+    when(fileHandler.createFolder(Path.of("artifact").toFile()))
         .thenReturn(Result.CREATED);
-    Mockito.when(templateReader.readTemplate(
-            format("/%s/%s", "maven-templates", "console-app.pom.template")))
+    when(templateReader.readTemplate(
+        format("/%s/%s", "maven-templates", "console-app.pom.template")))
         .thenReturn(pomTemplate);
-    Mockito.when(templateReader.readTemplate("/generic-templates/main.template"))
+    when(templateReader.readTemplate("/generic-templates/main.template"))
         .thenReturn(classTemplate);
-    Mockito.when(versionResolver.queryLatestVersion("junit-jupiter", "org.junit.jupiter"))
+    when(templateReader.readTemplate("/generic-templates/main-test.template"))
+        .thenReturn(testClassTemplate);
+    when(versionResolver.queryLatestVersion("junit-jupiter", "org.junit.jupiter"))
         .thenReturn(
             Optional.of(new Dependency("junit-jupiter", "org.junit.jupiter", junit5Version)));
+
     final var workdir = Path.of(artifact);
-    Mockito.when(engine.generateWrapper(workdir.toFile()))
+    when(engine.generateWrapper(workdir.toFile()))
         .thenReturn(new CommandResult(true, null));
     projectService.createConsoleApp(artifact, groupId, version);
 
-    Mockito.verify(fileHandler).writeToFile(Path.of(artifact, "pom.xml"), finalPom);
-    Mockito.verify(fileHandler).writeToFile(
+    verify(fileHandler).writeToFile(Path.of(artifact, "pom.xml"), finalPom);
+    verify(fileHandler).writeToFile(
         Path.of(artifact, "src", "main", "java", "test", "demo", "ConsoleApplication.java"),
         finalClass);
-    Mockito.verify(fileHandler)
+    verify(fileHandler).writeToFile(
+        Path.of(artifact, "src", "test", "java", "test", "demo", "ConsoleApplicationTest.java"),
+        finalTestClass);
+    verify(fileHandler)
         .createFolder(Path.of(artifact, "src", "main", "java", "test", "demo").toFile());
-    Mockito.verify(fileHandler)
+    verify(fileHandler)
         .createFolder(Path.of(artifact, "src", "main", "resources").toFile());
-    Mockito.verify(fileHandler).createFolder(
+    verify(fileHandler).createFolder(
         Path.of(artifact, "src", "test", "java", "test", "demo").toFile());
-    Mockito.verify(fileHandler)
+    verify(fileHandler)
         .createFolder(Path.of(artifact, "src", "test", "resources").toFile());
-    Mockito.verify(engine).generateWrapper(workdir.toFile());
+    verify(engine).generateWrapper(workdir.toFile());
   }
 }

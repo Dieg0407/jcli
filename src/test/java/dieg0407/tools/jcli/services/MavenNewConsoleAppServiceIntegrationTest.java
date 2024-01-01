@@ -41,6 +41,11 @@ public class MavenNewConsoleAppServiceIntegrationTest {
         "ConsoleApplication.java");
     assertThat(file).exists();
 
+    // validate existence of src/test/java/com/demo/ConsoleApplicationTest.java
+    final var testFile = Path.of(PROJECT_NAME, "src", "test", "java", "com", "demo",
+        "ConsoleApplicationTest.java");
+    assertThat(testFile).exists();
+
     // validate existence of pom.xml
     final var pom = Path.of(PROJECT_NAME, "pom.xml");
     assertThat(pom).exists();

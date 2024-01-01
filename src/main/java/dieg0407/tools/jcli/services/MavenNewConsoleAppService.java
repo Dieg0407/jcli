@@ -107,6 +107,12 @@ public class MavenNewConsoleAppService implements NewConsoleAppService {
           .replace("${className}", "ConsoleApplication");
 
       fileHandler.writeToFile(Path.of(srcDir.toString(), "ConsoleApplication.java"), mainClass);
+
+      final var mainTestClass = templateReader.readTemplate(TEST_CLASS_TEMPLATE)
+          .replace("${package}", groupId)
+          .replace("${className}", "ConsoleApplicationTest");
+
+      fileHandler.writeToFile(Path.of(testDir.toString(), "ConsoleApplicationTest.java"), mainTestClass);
       return Optional.empty();
     } catch (IOException e) {
       return Optional.of(new RuntimeException(e));
