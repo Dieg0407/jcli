@@ -4,6 +4,7 @@ import static dieg0407.tools.jcli.services.LongOperationWrapper.wrap;
 import static java.lang.String.format;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dieg0407.tools.jcli.commands.ProgramCodes;
 import dieg0407.tools.jcli.dependencies.MavenCentralRepository;
 import dieg0407.tools.jcli.dependencies.VersionResolver;
 import dieg0407.tools.jcli.dependencies.api.MavenCentralApiImpl;
@@ -44,24 +45,24 @@ public class MavenNewConsoleAppService implements NewConsoleAppService {
   }
 
   @Override
-  public void createConsoleApp(String artifactId, String groupId, String version) {
+  public int createConsoleApp(String artifactId, String groupId, String version) {
     System.err.println("Creating a new Maven project... ⏳");
     final var workdir = Path.of(artifactId).toFile();
     final var result = fileHandler.createFolder(workdir);
     if (result == Result.ERROR || result == null) {
       System.err.println("Unable to create the directory " + workdir.getAbsolutePath());
-      return;
+      return ProgramCodes.UNABLE_TO_CREATE_DIRECTORY;
     }
     if (result == Result.ALREADY_EXISTS) {
       System.err.println("The directory " + workdir.getAbsolutePath() + " already exists.");
-      return;
+      return ProgramCodes.DIRECTORY_ALREADY_EXISTS;
     }
 
     var pomCreationResult = wrap(() -> createPom(artifactId, groupId, version), "Attempting to create pom.xml... ");
     if (pomCreationResult.isPresent()) {
       System.err.println("Unable to create pom.xml ❌");
       pomCreationResult.get().printStackTrace(System.err);
-      return;
+      return ProgramCodes.UNABLE_TO_CREATE_POM;
     }
     System.err.println("Pom generated successfully ✔️");
 
@@ -69,10 +70,12 @@ public class MavenNewConsoleAppService implements NewConsoleAppService {
     if (!engineCommandResult.ok()) {
       System.err.println("Unable to generate maven wrapper ❌");
       engineCommandResult.exception().printStackTrace(System.err);
-      return;
+      return ProgramCodes.UNABLE_TO_GENERATE_MAVEN_WRAPPER;
     }
 
     System.err.println("Maven wrapper generated successfully ✔️");
+
+    return ProgramCodes.SUCCESS;
   }
 
   private Optional<Exception> createPom(String artifactId, String groupId, String version) {
@@ -80,7 +83,7 @@ public class MavenNewConsoleAppService implements NewConsoleAppService {
       // fetch junit latest version
       final var junit5 = versionResolver.queryLatestVersion("junit-jupiter", "org.junit.jupiter");
       if (junit5.isEmpty()) {
-        throw new RuntimeException("Unable to fetch junit5 latest version");
+        return Optional.of(new RuntimeException("Unable to fetch junit5 latest version"));
       }
 
       final var pom = templateReader.readTemplate(

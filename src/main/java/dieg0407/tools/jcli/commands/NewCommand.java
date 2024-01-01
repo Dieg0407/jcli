@@ -34,20 +34,19 @@ public class NewCommand implements Callable<Integer> {
   public Integer call() throws Exception {
     if (groupId == null || !GroupIdValidator.isValid(groupId)) {
       System.out.println("Invalid groupId.");
-      return ErrorCodes.INVALID_GROUP_ID_ERROR_CODE;
+      return ProgramCodes.INVALID_GROUP_ID_ERROR_CODE;
     }
     if (artifactId == null || artifactId.isBlank()) {
       System.out.println("Invalid artifactId.");
-      return ErrorCodes.INVALID_ARTIFACT_ID_ERROR_CODE;
+      return ProgramCodes.INVALID_ARTIFACT_ID_ERROR_CODE;
     }
     if (version == null || version.isBlank()) {
       System.out.println("Invalid version.");
-      return ErrorCodes.INVALID_VERSION_ERROR_CODE;
+      return ProgramCodes.INVALID_VERSION_ERROR_CODE;
     }
 
     final var service = MavenNewConsoleAppService.getInstance();
-    service.createConsoleApp(artifactId, groupId, version);
-    return 0;
+    return service.createConsoleApp(artifactId, groupId, version);
   }
 
 }

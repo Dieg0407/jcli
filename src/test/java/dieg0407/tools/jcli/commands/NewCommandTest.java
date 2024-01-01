@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import dieg0407.tools.jcli.commands.models.Template;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -27,7 +28,7 @@ public class NewCommandTest {
   void validateGroupId(String invalidGroupIds) throws Exception {
     newCommand.groupId = invalidGroupIds;
     final var exitCode = newCommand.call();
-    assertThat(exitCode).isEqualTo(ErrorCodes.INVALID_GROUP_ID_ERROR_CODE);
+    assertThat(exitCode).isEqualTo(ProgramCodes.INVALID_GROUP_ID_ERROR_CODE);
   }
 
   @ParameterizedTest
@@ -36,7 +37,7 @@ public class NewCommandTest {
   void validateArtifactId(String invalidArtifactId) throws Exception {
     newCommand.artifactId = invalidArtifactId;
     final var exitCode = newCommand.call();
-    assertThat(exitCode).isEqualTo(ErrorCodes.INVALID_ARTIFACT_ID_ERROR_CODE);
+    assertThat(exitCode).isEqualTo(ProgramCodes.INVALID_ARTIFACT_ID_ERROR_CODE);
   }
 
   @ParameterizedTest
@@ -45,6 +46,6 @@ public class NewCommandTest {
   void validateVersion(String invalidVersion) throws Exception {
     newCommand.version = invalidVersion;
     final var exitCode = newCommand.call();
-    assertThat(exitCode).isEqualTo(ErrorCodes.INVALID_VERSION_ERROR_CODE);
+    assertThat(exitCode).isEqualTo(ProgramCodes.INVALID_VERSION_ERROR_CODE);
   }
 }

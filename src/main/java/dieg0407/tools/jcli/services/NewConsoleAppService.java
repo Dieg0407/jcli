@@ -6,5 +6,5 @@ public interface NewConsoleAppService {
   String TEST_CLASS_TEMPLATE = "/generic-templates/main-test.template";
   String CONSOLE_APP_TEMPLATE_NAME = "console-app.pom.template";
 
-  void createConsoleApp(String artifactId, String groupId, String version);
+  int createConsoleApp(String artifactId, String groupId, String version);
 }

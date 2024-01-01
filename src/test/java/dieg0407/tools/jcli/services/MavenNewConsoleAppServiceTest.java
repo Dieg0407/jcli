@@ -1,11 +1,13 @@
 package dieg0407.tools.jcli.services;
 
 import static java.lang.String.format;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import dieg0407.tools.jcli.commands.ProgramCodes;
 import dieg0407.tools.jcli.dependencies.VersionResolver;
 import dieg0407.tools.jcli.dependencies.models.Dependency;
 import dieg0407.tools.jcli.engines.CommandResult;
@@ -40,17 +42,15 @@ public class MavenNewConsoleAppServiceTest {
   }
 
   @Test
-  void shouldThrowRuntimeExceptionWhenJunitVersionCouldNotBeQueried() {
+  void shouldReturnUnableToCreatePomWhenJunitVersionCouldNotBeQueried() {
     final var artifact = "artifact";
     final var groupId = "test.demo";
     when(versionResolver.queryLatestVersion(artifact, groupId))
         .thenReturn(Optional.empty());
     when(fileHandler.createFolder(Path.of("artifact").toFile())).thenReturn(Result.CREATED);
 
-    assertThatThrownBy(() ->
-        projectService.createConsoleApp(artifact, groupId, "1.0.0-SNAPSHOT")
-    ).isInstanceOf(RuntimeException.class)
-        .withFailMessage("Unable to fetch junit5 latest version");
+    final var code = projectService.createConsoleApp(artifact, groupId, "1.0.0-SNAPSHOT");
+    assertThat(code).isEqualTo(ProgramCodes.UNABLE_TO_CREATE_POM);
   }
 
   @Test
@@ -59,7 +59,8 @@ public class MavenNewConsoleAppServiceTest {
     final var groupId = "test.demo";
     when(fileHandler.createFolder(Path.of("artifact").toFile())).thenReturn(Result.ERROR);
 
-    projectService.createConsoleApp(artifact, groupId, "1.0.0-SNAPSHOT");
+    final var code = projectService.createConsoleApp(artifact, groupId, "1.0.0-SNAPSHOT");
+    assertThat(code).isEqualTo(ProgramCodes.UNABLE_TO_CREATE_DIRECTORY);
 
     verify(versionResolver, Mockito.never())
         .queryLatestVersion(Mockito.anyString(), Mockito.anyString());
@@ -72,7 +73,8 @@ public class MavenNewConsoleAppServiceTest {
     when(fileHandler.createFolder(Path.of("artifact").toFile()))
         .thenReturn(Result.ALREADY_EXISTS);
 
-    projectService.createConsoleApp(artifact, groupId, "1.0.0-SNAPSHOT");
+    final var code = projectService.createConsoleApp(artifact, groupId, "1.0.0-SNAPSHOT");
+    assertThat(code).isEqualTo(ProgramCodes.DIRECTORY_ALREADY_EXISTS);
 
     verify(versionResolver, Mockito.never())
         .queryLatestVersion(Mockito.anyString(), Mockito.anyString());
