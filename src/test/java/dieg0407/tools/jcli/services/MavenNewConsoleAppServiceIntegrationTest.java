@@ -3,14 +3,17 @@ package dieg0407.tools.jcli.services;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import dieg0407.tools.jcli.FolderDeleter;
+import dieg0407.tools.jcli.TestTypes;
 import java.io.IOException;
 import java.nio.file.Path;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 
+@Tag(TestTypes.INTEGRATION)
 @TestInstance(Lifecycle.PER_CLASS)
 public class MavenNewConsoleAppServiceIntegrationTest {
 

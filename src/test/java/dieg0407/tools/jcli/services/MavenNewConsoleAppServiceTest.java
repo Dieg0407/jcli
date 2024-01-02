@@ -2,11 +2,11 @@ package dieg0407.tools.jcli.services;
 
 import static java.lang.String.format;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import dieg0407.tools.jcli.TestTypes;
 import dieg0407.tools.jcli.commands.ProgramCodes;
 import dieg0407.tools.jcli.dependencies.VersionResolver;
 import dieg0407.tools.jcli.dependencies.models.Dependency;
@@ -16,9 +16,11 @@ import dieg0407.tools.jcli.services.FileHandler.Result;
 import java.nio.file.Path;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+@Tag(TestTypes.UNIT)
 public class MavenNewConsoleAppServiceTest {
 
   MavenNewConsoleAppService projectService;

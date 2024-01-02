@@ -2,9 +2,12 @@ package dieg0407.tools.jcli.commands.validators;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import dieg0407.tools.jcli.TestTypes;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+@Tag(TestTypes.UNIT)
 public class GroupIdValidatorTest {
 
   @ParameterizedTest

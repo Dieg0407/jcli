@@ -2,13 +2,15 @@ package dieg0407.tools.jcli.commands;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import dieg0407.tools.jcli.TestTypes;
 import dieg0407.tools.jcli.commands.models.Template;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+@Tag(TestTypes.UNIT)
 public class NewCommandTest {
 
   NewCommand newCommand;
