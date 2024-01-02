@@ -9,10 +9,11 @@ Maven will be supported first as it should be easier to handle xml rather than a
 kotlin which would be needed for gradle.
 
 ## Platform dependencies
-- `Java 21`: Temurin was used to create this application
+- `Java 17`: Temurin was used to create this application
 
 ## Roadmap
-- Maven support for simple console app ⏳
+- Maven support for simple console app ✅
+- Add CI/CD pipeline ⏳
 - Add a bash | powershell wrapper ⏳
 - Maven support for adding/removing dependencies ⏳
 - Maven support for configuring some "common" plugins ⏳
