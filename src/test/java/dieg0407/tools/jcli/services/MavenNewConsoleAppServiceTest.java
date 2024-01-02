@@ -33,14 +33,17 @@ public class MavenNewConsoleAppServiceTest {
 
   Engine engine;
 
+  JavaVersion javaVersion;
+
   @BeforeEach
   void init() {
     templateReader = mock(TemplateReader.class);
     versionResolver = mock(VersionResolver.class);
     fileHandler = mock(FileHandler.class);
     engine = mock(Engine.class);
+    javaVersion = mock(JavaVersion.class);
     projectService = new MavenNewConsoleAppService(templateReader, versionResolver, fileHandler,
-        engine);
+        engine, javaVersion);
   }
 
   @Test
@@ -88,6 +91,7 @@ public class MavenNewConsoleAppServiceTest {
     final var groupId = "test.demo";
     final var version = "1.0.0-SNAPSHOT";
     final var junit5Version = "5.7.2";
+    final var javaVersionNumber = 17;
     final var pomTemplate = """
         ${artifactId}
         ${groupId}
@@ -132,6 +136,7 @@ public class MavenNewConsoleAppServiceTest {
     when(versionResolver.queryLatestVersion("junit-jupiter", "org.junit.jupiter"))
         .thenReturn(
             Optional.of(new Dependency("junit-jupiter", "org.junit.jupiter", junit5Version)));
+    when(javaVersion.get()).thenReturn(17);
 
     final var workdir = Path.of(artifact);
     when(engine.generateWrapper(workdir.toFile()))
@@ -154,5 +159,6 @@ public class MavenNewConsoleAppServiceTest {
     verify(fileHandler)
         .createFolder(Path.of(artifact, "src", "test", "resources").toFile());
     verify(engine).generateWrapper(workdir.toFile());
+    verify(javaVersion).get();
   }
 }

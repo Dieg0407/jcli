@@ -22,15 +22,16 @@ public class MavenNewConsoleAppService implements NewConsoleAppService {
   private final TemplateReader templateReader;
   private final VersionResolver versionResolver;
   private final FileHandler fileHandler;
-
   private final Engine engine;
+  private final JavaVersion javaVersion;
 
   public MavenNewConsoleAppService(TemplateReader templateReader, VersionResolver versionResolver,
-      FileHandler fileHandler, Engine engine) {
+      FileHandler fileHandler, Engine engine, JavaVersion javaVersion) {
     this.templateReader = templateReader;
     this.versionResolver = versionResolver;
     this.fileHandler = fileHandler;
     this.engine = engine;
+    this.javaVersion = javaVersion;
   }
 
   public static NewConsoleAppService getInstance() {
@@ -41,7 +42,9 @@ public class MavenNewConsoleAppService implements NewConsoleAppService {
     final var fileHandler = new FileHandler() {
     };
     final var engine = new MavenEngine();
-    return new MavenNewConsoleAppService(templateReader, resolver, fileHandler, engine);
+    final var javaVersion = new JavaVersion() {
+    };
+    return new MavenNewConsoleAppService(templateReader, resolver, fileHandler, engine, javaVersion);
   }
 
   @Override
@@ -92,7 +95,7 @@ public class MavenNewConsoleAppService implements NewConsoleAppService {
           .replace("${groupId}", groupId)
           .replace("${version}", version)
           .replace("${junit5Version}", junit5.get().version())
-          .replace("${javaVersion}", "17");
+          .replace("${javaVersion}", String.valueOf(javaVersion.get()));
 
       fileHandler.writeToFile(Path.of(artifactId, "pom.xml"), pom);
       final var srcDir = Path.of(artifactId, "src", "main", "java", groupId.replace(".", "/"));
