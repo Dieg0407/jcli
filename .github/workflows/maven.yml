@@ -19,10 +19,9 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-    - name: Allow Maven to download dependencies
-      run: sudo chmod -R 777 mvnw
 
     - name: Build and Unit Test
-      run: ./mvnw -B package -Dtests=unit --file pom.xml
+      run: mvn -B package -Dtests=unit --file pom.xml
+
     - name: Integration Test
-      run: ./mvnw test -Dtests=integration --file pom.xml
+      run: mvn test -Dtests=integration --file pom.xml
