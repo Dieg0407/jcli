@@ -8,7 +8,6 @@ on:
 
 jobs:
   build:
-  
     runs-on: ubuntu-latest
 
     steps:
@@ -25,3 +24,12 @@ jobs:
 
     - name: Integration Test
       run: mvn test -Dtests=integration --file pom.xml
+
+    - name: Package executable
+      run: cd target ; tar czf jcli.tar.gz jcli-*.jar libs
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+          name: jcli
+          path: target/jcli.tar.gz
