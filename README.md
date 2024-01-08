@@ -9,7 +9,9 @@ Maven will be supported first as it should be easier to handle xml rather than a
 kotlin which would be needed for gradle.
 
 ## Platform dependencies
-- `Java 17`: Temurin was used to create this application
+- `OpenJDK 17 Temurin`
+- `Node 20`
+- `Husky`
 
 ## Roadmap
 - Maven support for simple console app ✅
