@@ -1,14 +1,18 @@
-name: Java CI with Maven
+name: CI/CD Pipeline
 
 on:
   push:
     branches: [ "main" ]
+    tags:
+      - 'v*.*.*'
   pull_request:
     branches: [ "main" ]
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    name: "Build and Test"
+    runs-on: ubuntu-22.04
 
     steps:
     - uses: actions/checkout@v3
@@ -28,8 +32,10 @@ jobs:
     - name: Package executable
       run: cd target ; tar czf jcli.tar.gz jcli-*.jar libs
 
-    - name: Upload artifact
-      uses: actions/upload-artifact@v2
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      if: contains(github.ref, 'refs/tags/')
       with:
-          name: jcli
-          path: target/jcli.tar.gz
+        token: ${{ secrets.RELEASE_CREATOR_TOKEN }}
+        files: |
+          target/jcli.tar.gz
