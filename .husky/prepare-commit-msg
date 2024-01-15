@@ -3,8 +3,8 @@
 
 COMMIT_MSG=$(cat "$1")
 
-CURRENT_VERSION=$(./mvnw help:evaluate -Dexpression=project.version -q -DforceStdout)
-NEXT_VERSION=$(semver-next --commit-message "$COMMIT_MSG" --last-version "$CURRENT_VERSION")
+VALIDATE_RESULT=$(semver validate --commit-message "$COMMIT_MSG")
 
-./mvnw versions:set -DnewVersion="$NEXT_VERSION" -DgenerateBackupPoms=false
-git add pom.xml
+if [ "$VALIDATE_RESULT" != "valid" ]; then
+  exit 1
+fi
