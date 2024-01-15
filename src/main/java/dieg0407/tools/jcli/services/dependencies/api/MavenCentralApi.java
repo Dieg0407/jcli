@@ -1,4 +1,4 @@
-package dieg0407.tools.jcli.dependencies.api;
+package dieg0407.tools.jcli.services.dependencies.api;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package dieg0407.tools.jcli.dependencies.models;
+package dieg0407.tools.jcli.services.dependencies.models;
 
 public record Dependency(String artifactId, String groupId, String version) implements
     Comparable<Dependency> {

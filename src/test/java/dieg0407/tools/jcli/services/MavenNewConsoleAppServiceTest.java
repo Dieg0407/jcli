@@ -8,11 +8,11 @@ import static org.mockito.Mockito.when;
 
 import dieg0407.tools.jcli.TestTypes;
 import dieg0407.tools.jcli.commands.ProgramCodes;
-import dieg0407.tools.jcli.dependencies.VersionResolver;
-import dieg0407.tools.jcli.dependencies.models.Dependency;
-import dieg0407.tools.jcli.engines.CommandResult;
-import dieg0407.tools.jcli.engines.Engine;
 import dieg0407.tools.jcli.services.FileHandler.Result;
+import dieg0407.tools.jcli.services.dependencies.VersionResolver;
+import dieg0407.tools.jcli.services.dependencies.models.Dependency;
+import dieg0407.tools.jcli.services.engines.CommandResult;
+import dieg0407.tools.jcli.services.engines.Engine;
 import java.nio.file.Path;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;

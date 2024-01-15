@@ -1,6 +1,6 @@
-package dieg0407.tools.jcli.dependencies;
+package dieg0407.tools.jcli.services.dependencies;
 
-import dieg0407.tools.jcli.dependencies.models.Dependency;
+import dieg0407.tools.jcli.services.dependencies.models.Dependency;
 import java.util.Optional;
 
 public interface VersionResolver {
