@@ -14,7 +14,7 @@ public class MavenEngine implements Engine {
       processBuilder.directory(directory);
       final var process = processBuilder.start();
       final var exitCode = process.waitFor();
-      if ( exitCode == 0 ) {
+      if (exitCode == 0) {
         return new CommandResult(exitCode, Optional.empty(), Optional.empty());
       }
       final var errorMessage = new String(process.getErrorStream().readAllBytes());

@@ -6,10 +6,14 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 
 public final class LongOperationWrapper {
-  private LongOperationWrapper() {}
+
+  private LongOperationWrapper() {
+  }
 
   /**
-   * This method wraps operations that may take too long and displays a message while waiting for them to finish
+   * This method wraps operations that may take too long and displays a message while waiting for
+   * them to finish
+   *
    * @param operation
    * @param message
    * @param <T>
@@ -18,7 +22,7 @@ public final class LongOperationWrapper {
     final var isFinished = new AtomicBoolean(false);
     final var waiterThread = CompletableFuture.supplyAsync(() -> {
       var direction = false;
-      while(!isFinished.get()) {
+      while (!isFinished.get()) {
         try {
           direction = !direction;
           var character = direction ? "\\" : "/";
@@ -26,7 +30,8 @@ public final class LongOperationWrapper {
 
           TimeUnit.MILLISECONDS.sleep(500);
         } catch (InterruptedException e) {
-          throw new RuntimeException("Time wrapper failed to wait, this should not be happening!", e);
+          throw new RuntimeException("Time wrapper failed to wait, this should not be happening!",
+              e);
         }
       }
       System.err.println(message + " done!");

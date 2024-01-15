@@ -45,7 +45,8 @@ public class MavenNewConsoleAppService implements NewConsoleAppService {
     final var engine = new MavenEngine();
     final var javaVersion = new JavaVersion() {
     };
-    return new MavenNewConsoleAppService(templateReader, resolver, fileHandler, engine, javaVersion);
+    return new MavenNewConsoleAppService(templateReader, resolver, fileHandler, engine,
+        javaVersion);
   }
 
   @Override
@@ -62,7 +63,8 @@ public class MavenNewConsoleAppService implements NewConsoleAppService {
       return ProgramCodes.DIRECTORY_ALREADY_EXISTS;
     }
 
-    var pomCreationResult = wrap(() -> createPom(artifactId, groupId, version), "Attempting to create pom.xml... ");
+    var pomCreationResult = wrap(() -> createPom(artifactId, groupId, version),
+        "Attempting to create pom.xml... ");
     if (pomCreationResult.isPresent()) {
       System.err.println("Unable to create pom.xml ❌");
       pomCreationResult.get().printStackTrace(System.err);
@@ -70,7 +72,8 @@ public class MavenNewConsoleAppService implements NewConsoleAppService {
     }
     System.err.println("Pom generated successfully ✔️");
 
-    var engineCommandResult = wrap(() -> engine.generateWrapper(workdir), "Attempting to generate maven wrapper... ");
+    var engineCommandResult = wrap(() -> engine.generateWrapper(workdir),
+        "Attempting to generate maven wrapper... ");
     if (engineCommandResult.exitCode() != CommandResult.SUCCESS) {
       System.err.println("Unable to generate maven wrapper ❌");
       engineCommandResult.err().ifPresent(System.err::println);
@@ -120,7 +123,8 @@ public class MavenNewConsoleAppService implements NewConsoleAppService {
           .replace("${package}", groupId)
           .replace("${className}", "ConsoleApplicationTest");
 
-      fileHandler.writeToFile(Path.of(testDir.toString(), "ConsoleApplicationTest.java"), mainTestClass);
+      fileHandler.writeToFile(Path.of(testDir.toString(), "ConsoleApplicationTest.java"),
+          mainTestClass);
       return Optional.empty();
     } catch (IOException e) {
       return Optional.of(new RuntimeException(e));

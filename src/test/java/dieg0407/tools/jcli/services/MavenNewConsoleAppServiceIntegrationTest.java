@@ -17,10 +17,9 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 @TestInstance(Lifecycle.PER_CLASS)
 public class MavenNewConsoleAppServiceIntegrationTest {
 
-  NewConsoleAppService newConsoleAppService;
-
   static final String PROJECT_NAME = "test-project";
   static final Path PROJECT_PATH = Path.of(PROJECT_NAME);
+  NewConsoleAppService newConsoleAppService;
 
   @BeforeAll
   void beforeAll() throws IOException {

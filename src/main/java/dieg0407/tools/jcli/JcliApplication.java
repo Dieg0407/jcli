@@ -19,14 +19,14 @@ public class JcliApplication implements Callable<Integer> {
       "--engine"}, defaultValue = "MAVEN", description = "The build engine to use. Valid values are: ${COMPLETION-CANDIDATES}. Default: ${DEFAULT-VALUE}.")
   EngineType engine = EngineType.MAVEN;
 
+  public static void main(String[] args) {
+    int exitCode = new CommandLine(new JcliApplication()).execute(args);
+    System.exit(exitCode);
+  }
+
   @Override
   public Integer call() throws Exception {
     System.err.println("You need to specify a subcommand.");
     return 1;
-  }
-
-  public static void main(String[] args) {
-    int exitCode = new CommandLine(new JcliApplication()).execute(args);
-    System.exit(exitCode);
   }
 }
