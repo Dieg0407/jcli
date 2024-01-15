@@ -140,7 +140,7 @@ public class MavenNewConsoleAppServiceTest {
 
     final var workdir = Path.of(artifact);
     when(engine.generateWrapper(workdir.toFile()))
-        .thenReturn(new CommandResult(true, null));
+        .thenReturn(new CommandResult(CommandResult.SUCCESS, Optional.empty(), Optional.empty()));
     projectService.createConsoleApp(artifact, groupId, version);
 
     verify(fileHandler).writeToFile(Path.of(artifact, "pom.xml"), finalPom);

@@ -8,6 +8,7 @@ import dieg0407.tools.jcli.commands.ProgramCodes;
 import dieg0407.tools.jcli.dependencies.MavenCentralRepository;
 import dieg0407.tools.jcli.dependencies.VersionResolver;
 import dieg0407.tools.jcli.dependencies.api.MavenCentralApiImpl;
+import dieg0407.tools.jcli.engines.CommandResult;
 import dieg0407.tools.jcli.engines.Engine;
 import dieg0407.tools.jcli.engines.MavenEngine;
 import dieg0407.tools.jcli.services.FileHandler.Result;
@@ -70,9 +71,10 @@ public class MavenNewConsoleAppService implements NewConsoleAppService {
     System.err.println("Pom generated successfully ✔️");
 
     var engineCommandResult = wrap(() -> engine.generateWrapper(workdir), "Attempting to generate maven wrapper... ");
-    if (!engineCommandResult.ok()) {
+    if (engineCommandResult.exitCode() != CommandResult.SUCCESS) {
       System.err.println("Unable to generate maven wrapper ❌");
-      engineCommandResult.exception().printStackTrace(System.err);
+      engineCommandResult.err().ifPresent(System.err::println);
+      engineCommandResult.exception().ifPresent(e -> e.printStackTrace(System.err));
       return ProgramCodes.UNABLE_TO_GENERATE_MAVEN_WRAPPER;
     }
 
