@@ -5,6 +5,8 @@ import dieg0407.tools.jcli.commands.models.Template;
 import dieg0407.tools.jcli.commands.validators.GroupIdValidator;
 import dieg0407.tools.jcli.services.MavenNewConsoleAppService;
 import java.util.concurrent.Callable;
+
+import dieg0407.tools.jcli.services.ServiceFactory;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
@@ -30,6 +32,8 @@ public class NewCommand implements Callable<Integer> {
       "--version"}, defaultValue = "1.0-SNAPSHOT", description = "The version of the project.")
   String version;
 
+  ServiceFactory factory = ServiceFactory.getInstance();
+
   @Override
   public Integer call() throws Exception {
     if (groupId == null || !GroupIdValidator.isValid(groupId)) {
@@ -45,8 +49,9 @@ public class NewCommand implements Callable<Integer> {
       return ProgramCodes.INVALID_VERSION_ERROR_CODE;
     }
 
-    final var service = MavenNewConsoleAppService.getInstance();
-    return service.createConsoleApp(artifactId, groupId, version);
+    final var newConsoleAppService = factory.newConsoleAppService();
+
+    return newConsoleAppService.createConsoleApp(artifactId, groupId, version);
   }
 
 }
