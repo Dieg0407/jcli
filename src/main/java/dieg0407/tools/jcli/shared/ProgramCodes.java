@@ -1,4 +1,4 @@
-package dieg0407.tools.jcli.commands;
+package dieg0407.tools.jcli.shared;
 
 public final class ProgramCodes {
 
@@ -10,4 +10,5 @@ public final class ProgramCodes {
   public static final int UNABLE_TO_CREATE_POM = 6;
   public static final int UNABLE_TO_GENERATE_MAVEN_WRAPPER = 7;
   public static final int SUCCESS = 0;
+  public static final int DEPENDENCY_NOT_FOUND = 8;
 }

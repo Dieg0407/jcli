@@ -7,7 +7,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import dieg0407.tools.jcli.TestTypes;
-import dieg0407.tools.jcli.commands.ProgramCodes;
+import dieg0407.tools.jcli.shared.ProgramCodes;
 import dieg0407.tools.jcli.services.FileHandler.Result;
 import dieg0407.tools.jcli.services.dependencies.VersionResolver;
 import dieg0407.tools.jcli.services.dependencies.models.Dependency;

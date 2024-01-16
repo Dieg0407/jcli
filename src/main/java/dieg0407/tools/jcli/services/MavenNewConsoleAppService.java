@@ -4,7 +4,7 @@ import static dieg0407.tools.jcli.services.LongOperationWrapper.wrap;
 import static java.lang.String.format;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dieg0407.tools.jcli.commands.ProgramCodes;
+import dieg0407.tools.jcli.shared.ProgramCodes;
 import dieg0407.tools.jcli.services.FileHandler.Result;
 import dieg0407.tools.jcli.services.dependencies.MavenCentralRepository;
 import dieg0407.tools.jcli.services.dependencies.VersionResolver;

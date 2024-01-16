@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import dieg0407.tools.jcli.TestTypes;
 import dieg0407.tools.jcli.commands.models.Template;
+import dieg0407.tools.jcli.shared.ProgramCodes;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.params.ParameterizedTest;
