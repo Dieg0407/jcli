@@ -20,14 +20,10 @@ public class PomBuildFile implements BuildFile {
   public boolean dependencyExists(String artifactId, @Nullable String groupId, @Nullable String version) throws InvalidBuildFileException {
     final var pomFile = pomFetcher.fetch();
     try {
-      final var xml = xmlMapper.readTree(pomFile);
-      final var projectNode = xml.get("project");
-      if (projectNode == null) {
-        throw new InvalidBuildFileException("No project node. Invalid pom.xml file");
-      }
-      final var dependenciesNode = projectNode.get("dependencies");
+      final var root = xmlMapper.readTree(pomFile);
+      final var dependenciesNode = root.get("dependencies");
       if (dependenciesNode == null || !dependenciesNode.isArray()) {
-        throw new InvalidBuildFileException("No dependencies under project. Invalid pom.xml file");
+        throw new InvalidBuildFileException("No dependencies node under the project. Invalid pom.xml file");
       }
       for (var dependencyNode : dependenciesNode) {
         final var dependencyArtifactId = dependencyNode.get("artifactId");
