@@ -2,6 +2,7 @@ package dieg0407.tools.jcli.services.dependencies.api;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.annotation.Nullable;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -18,10 +19,10 @@ public class MavenCentralApiImpl implements MavenCentralApi {
   }
 
   @Override
-  public List<MavenCentralDependency> query(String artifactId, String groupId) {
+  public List<MavenCentralDependency> query(String artifactId, @Nullable String groupId, @Nullable String version) {
     try {
       final var client = HttpClient.newHttpClient();
-      final var query = String.format("?q=a:%s+AND+g:%s&rows=20&wt=json", artifactId, groupId);
+      final var query = generateQuery(artifactId, groupId, version);
       final var request = HttpRequest.newBuilder()
           .GET()
           .uri(URI.create("https://search.maven.org/solrsearch/select" + query))
@@ -41,5 +42,17 @@ public class MavenCentralApiImpl implements MavenCentralApi {
     } catch (IOException | InterruptedException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private String generateQuery(String artifactId, String groupId, String version) {
+    final var builder = new StringBuilder("?q=a:");
+    builder.append(artifactId);
+    if (groupId != null) {
+      builder.append("+AND+g:").append(groupId);
+    }
+    if (version != null) {
+      builder.append("+AND+v:").append(version);
+    }
+    return builder.append("&rows=20&wt=json").toString();
   }
 }

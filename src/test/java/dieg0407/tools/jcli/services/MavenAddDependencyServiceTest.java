@@ -23,7 +23,7 @@ public class MavenAddDependencyServiceTest {
 
   VersionResolver mockVersionResolver;
 
-  RequireInput mockRequireInput;
+  Selector<Dependency> mockSelector;
 
   BuildFile mockBuildFile;
 
@@ -32,9 +32,9 @@ public class MavenAddDependencyServiceTest {
   @BeforeEach
   void init() {
     mockVersionResolver = mock(VersionResolver.class);
-    mockRequireInput = mock(RequireInput.class);
+    mockSelector = mock(Selector.class);
     mockBuildFile = mock(BuildFile.class);
-    service = new MavenAddDependencyService(mockVersionResolver, mockRequireInput, mockBuildFile);
+    service = new MavenAddDependencyService(mockVersionResolver, mockSelector, mockBuildFile);
   }
 
   @Test
@@ -44,10 +44,10 @@ public class MavenAddDependencyServiceTest {
     final var version = "version";
     final var type = DependencyType.compile;
 
-    when(mockVersionResolver.queryVersions(artifactId, groupId, version)).thenReturn(List.of());
+    when(mockVersionResolver.query(artifactId, groupId, version)).thenReturn(List.of());
 
     final var result = service.add(type, artifactId, groupId, version, false);
-    verify(mockVersionResolver, times(1)).queryVersions(artifactId, groupId, version);
+    verify(mockVersionResolver, times(1)).query(artifactId, groupId, version);
     verify(mockBuildFile, times(0)).addDependency(type, artifactId, groupId, version);
 
     assertThat(result).isEqualTo(ProgramCodes.DEPENDENCY_NOT_FOUND);
@@ -60,11 +60,11 @@ public class MavenAddDependencyServiceTest {
     final var version = "version";
     final var type = DependencyType.compile;
 
-    when(mockVersionResolver.queryVersions(artifactId, groupId, version))
+    when(mockVersionResolver.query(artifactId, groupId, version))
         .thenReturn(List.of(new Dependency(artifactId, groupId, version)));
 
     final var result = service.add(type, artifactId, groupId, version, false);
-    verify(mockVersionResolver, times(1)).queryVersions(artifactId, groupId, version);
+    verify(mockVersionResolver, times(1)).query(artifactId, groupId, version);
     verify(mockBuildFile, times(1)).addDependency(type, artifactId, groupId, version);
 
     assertThat(result).isEqualTo(ProgramCodes.SUCCESS);
@@ -80,13 +80,13 @@ public class MavenAddDependencyServiceTest {
     final var dep1 = new Dependency(artifactId, groupId, version);
     final var dep2 = new Dependency(artifactId, groupId, "second version");
 
-    when(mockVersionResolver.queryVersions(artifactId, groupId, null))
+    when(mockVersionResolver.query(artifactId, groupId, null))
         .thenReturn(List.of(dep1, dep2));
 
     final var result = service.add(type, artifactId, groupId, null, true);
-    verify(mockVersionResolver, times(1)).queryVersions(artifactId, groupId, null);
+    verify(mockVersionResolver, times(1)).query(artifactId, groupId, null);
     verify(mockBuildFile, times(1)).addDependency(type, artifactId, groupId, version);
-    verify(mockRequireInput, times(0)).choose(any());
+    verify(mockSelector, times(0)).choose(any());
 
     assertThat(result).isEqualTo(ProgramCodes.SUCCESS);
   }
@@ -101,14 +101,14 @@ public class MavenAddDependencyServiceTest {
     final var dep1 = new Dependency(artifactId, groupId, "random version");
     final var dep2 = new Dependency(artifactId, groupId, version);
 
-    when(mockVersionResolver.queryVersions(artifactId, groupId, null))
+    when(mockVersionResolver.query(artifactId, groupId, null))
         .thenReturn(List.of(dep1, dep2));
-    when(mockRequireInput.choose(List.of(dep1, dep2))).thenReturn(dep2);
+    when(mockSelector.choose(List.of(dep1, dep2))).thenReturn(dep2);
 
     final var result = service.add(type, artifactId, groupId, null, false);
-    verify(mockVersionResolver, times(1)).queryVersions(artifactId, groupId, null);
+    verify(mockVersionResolver, times(1)).query(artifactId, groupId, null);
     verify(mockBuildFile, times(1)).addDependency(type, artifactId, groupId, version);
-    verify(mockRequireInput, times(1)).choose(List.of(dep1, dep2));
+    verify(mockSelector, times(1)).choose(List.of(dep1, dep2));
 
     assertThat(result).isEqualTo(ProgramCodes.SUCCESS);
   }
@@ -125,7 +125,7 @@ public class MavenAddDependencyServiceTest {
 
     final var result = service.add(type, artifactId, groupId, version, false);
     verify(mockBuildFile, times(0)).addDependency(type, artifactId, groupId, version);
-    verify(mockVersionResolver, times(0)).queryVersions(artifactId, groupId, version);
+    verify(mockVersionResolver, times(0)).query(artifactId, groupId, version);
 
     assertThat(result).isEqualTo(ProgramCodes.SUCCESS);
   }

@@ -18,19 +18,21 @@ public class MavenCentralRepository implements VersionResolver {
 
   @Override
   public Optional<Dependency> queryLatestVersion(String artifactId, String groupId) {
-    return mavenCentralApi.query(artifactId, groupId).stream()
+    return mavenCentralApi.query(artifactId, groupId, null).stream()
         .findFirst()
         .map(this::toDependency);
   }
 
   @Override
-  public List<Dependency> queryVersions(String artifactId, @Nullable String groupId,
+  public List<Dependency> query(String artifactId, @Nullable String groupId,
       @Nullable String version) {
-    throw new UnsupportedOperationException();
+    return mavenCentralApi.query(artifactId, groupId, version).stream()
+        .map(this::toDependency)
+        .toList();
   }
 
   private Dependency toDependency(MavenCentralDependency rawDependency) {
     return new Dependency(rawDependency.getA(), rawDependency.getG(),
-        rawDependency.getLatestVersion());
+        rawDependency.getLatestVersion() == null ? rawDependency.getV() : rawDependency.getLatestVersion());
   }
 }

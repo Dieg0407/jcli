@@ -1,5 +1,6 @@
 package dieg0407.tools.jcli.services.dependencies;
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -41,5 +42,21 @@ public class MavenCentralRepositoryIntegrationTest {
         "demos.test.nonexisting");
     assertThat(dependency)
         .isEmpty();
+  }
+
+  @Test
+  void shouldFetchAllVersions() {
+    // query many artifacts for a generic id
+    final var dependencies = versionResolver.query("test", null, null);
+    assertThat(dependencies)
+        .isNotEmpty()
+        .hasSizeGreaterThan(1);
+
+    final var dependency = dependencies.get(0);
+    final var chosenDependency = versionResolver.query(dependency.artifactId(), dependency.groupId(), dependency.version());
+    assertThat(chosenDependency)
+        .isNotEmpty()
+        .hasSize(1)
+        .isEqualTo(singletonList(dependency));
   }
 }

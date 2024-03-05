@@ -9,6 +9,7 @@ public class MavenCentralDependency {
   private String id;
   private String g;
   private String a;
+  private String v;
 
   @JsonProperty("latestVersion")
   private String latestVersion;
@@ -54,5 +55,13 @@ public class MavenCentralDependency {
 
   public void setRepositoryId(String repositoryId) {
     this.repositoryId = repositoryId;
+  }
+
+  public String getV() {
+    return v;
+  }
+
+  public void setV(String v) {
+    this.v = v;
   }
 }

@@ -1,20 +1,21 @@
 package dieg0407.tools.jcli.services;
 
 import dieg0407.tools.jcli.services.dependencies.VersionResolver;
+import dieg0407.tools.jcli.services.dependencies.models.Dependency;
 import dieg0407.tools.jcli.services.engines.BuildFile;
 import dieg0407.tools.jcli.shared.DependencyType;
 import dieg0407.tools.jcli.shared.ProgramCodes;
 
 public class MavenAddDependencyService implements AddDependencyService {
   private final VersionResolver versionResolver;
-  private final RequireInput requireInput;
+  private final Selector<Dependency> selector;
   private final BuildFile buildFile;
 
 
-  public MavenAddDependencyService(VersionResolver versionResolver, RequireInput requireInput,
+  public MavenAddDependencyService(VersionResolver versionResolver, Selector<Dependency> selector,
       BuildFile buildFile) {
     this.versionResolver = versionResolver;
-    this.requireInput = requireInput;
+    this.selector = selector;
     this.buildFile = buildFile;
   }
 
@@ -24,7 +25,7 @@ public class MavenAddDependencyService implements AddDependencyService {
     if (buildFile.dependencyExists(artifactId, groupId, version)) {
       return ProgramCodes.SUCCESS;
     }
-    final var dependencies = versionResolver.queryVersions(artifactId, groupId, version);
+    final var dependencies = versionResolver.query(artifactId, groupId, version);
     if (dependencies.isEmpty()) {
       return ProgramCodes.DEPENDENCY_NOT_FOUND;
     }
@@ -35,7 +36,7 @@ public class MavenAddDependencyService implements AddDependencyService {
       return ProgramCodes.SUCCESS;
     }
 
-    final var dependency = requireInput.choose(dependencies);
+    final var dependency = selector.choose(dependencies);
     buildFile.addDependency(type, dependency.artifactId(), dependency.groupId(), dependency.version());
 
     return ProgramCodes.SUCCESS;

@@ -11,7 +11,7 @@ import dieg0407.tools.jcli.services.dependencies.VersionResolver;
 import dieg0407.tools.jcli.services.dependencies.api.MavenCentralApiImpl;
 import dieg0407.tools.jcli.services.engines.CommandResult;
 import dieg0407.tools.jcli.services.engines.Engine;
-import dieg0407.tools.jcli.services.engines.MavenEngine;
+import dieg0407.tools.jcli.services.engines.mvn.MavenEngine;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
