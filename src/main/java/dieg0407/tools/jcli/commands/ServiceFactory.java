@@ -1,4 +1,7 @@
-package dieg0407.tools.jcli.services;
+package dieg0407.tools.jcli.commands;
+
+import dieg0407.tools.jcli.services.MavenNewConsoleAppService;
+import dieg0407.tools.jcli.services.NewConsoleAppService;
 
 public interface ServiceFactory {
 
