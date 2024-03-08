@@ -1,7 +1,9 @@
-package dieg0407.tools.jcli.services.dependencies.api;
+package dieg0407.tools.jcli.services.dependencies.mvn;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dieg0407.tools.jcli.services.dependencies.VersionResolver;
+import dieg0407.tools.jcli.services.dependencies.models.Dependency;
 import jakarta.annotation.Nullable;
 import java.io.IOException;
 import java.net.URI;
@@ -9,17 +11,37 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
+import java.util.Optional;
 
-public class MavenCentralApiImpl implements MavenCentralApi {
+public class MavenCentralVersionResolver implements VersionResolver {
 
   private final ObjectMapper mapper;
 
-  public MavenCentralApiImpl(ObjectMapper mapper) {
+  public MavenCentralVersionResolver(ObjectMapper mapper) {
     this.mapper = mapper;
   }
 
   @Override
-  public List<MavenCentralDependency> query(String artifactId, @Nullable String groupId, @Nullable String version) {
+  public Optional<Dependency> queryLatestVersion(String artifactId, String groupId) {
+    return queryMavenCentral(artifactId, groupId, null).stream()
+        .findFirst()
+        .map(this::toDependency);
+  }
+
+  @Override
+  public List<Dependency> query(String artifactId, @Nullable String groupId,
+      @Nullable String version) {
+    return queryMavenCentral(artifactId, groupId, version).stream()
+        .map(this::toDependency)
+        .toList();
+  }
+
+  private Dependency toDependency(MavenCentralDependency rawDependency) {
+    return new Dependency(rawDependency.getA(), rawDependency.getG(),
+        rawDependency.getLatestVersion() == null ? rawDependency.getV() : rawDependency.getLatestVersion());
+  }
+
+  private List<MavenCentralDependency> queryMavenCentral(String artifactId, @Nullable String groupId, @Nullable String version) {
     try {
       final var client = HttpClient.newHttpClient();
       final var query = generateQuery(artifactId, groupId, version);

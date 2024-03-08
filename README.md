@@ -17,7 +17,6 @@ kotlin which would be needed for gradle.
 ## Roadmap
 - Maven support for simple console app ✅
 - Add CI/CD pipeline ✅
-- Add a bash | powershell wrapper ⏳
 - Maven support for adding/removing dependencies ⏳
 - Maven support for configuring some "common" plugins ⏳
 - Maven support for deployable webapps ⏳

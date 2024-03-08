@@ -6,9 +6,8 @@ import static java.lang.String.format;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dieg0407.tools.jcli.shared.ProgramCodes;
 import dieg0407.tools.jcli.services.FileHandler.Result;
-import dieg0407.tools.jcli.services.dependencies.MavenCentralRepository;
+import dieg0407.tools.jcli.services.dependencies.mvn.MavenCentralVersionResolver;
 import dieg0407.tools.jcli.services.dependencies.VersionResolver;
-import dieg0407.tools.jcli.services.dependencies.api.MavenCentralApiImpl;
 import dieg0407.tools.jcli.services.engines.CommandResult;
 import dieg0407.tools.jcli.services.engines.Engine;
 import dieg0407.tools.jcli.services.engines.mvn.MavenEngine;
@@ -36,8 +35,7 @@ public class MavenNewConsoleAppService implements NewConsoleAppService {
   }
 
   public static NewConsoleAppService getInstance() {
-    final var api = new MavenCentralApiImpl(new ObjectMapper());
-    final var resolver = new MavenCentralRepository(api);
+    final var resolver = new MavenCentralVersionResolver(new ObjectMapper());
     final var templateReader = new TemplateReader() {
     };
     final var fileHandler = new FileHandler() {

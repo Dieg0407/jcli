@@ -1,11 +1,11 @@
-package dieg0407.tools.jcli.services.dependencies;
+package dieg0407.tools.jcli.services.dependencies.mvn;
 
 import static java.util.Collections.singletonList;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dieg0407.tools.jcli.TestTypes;
-import dieg0407.tools.jcli.services.dependencies.api.MavenCentralApiImpl;
+import dieg0407.tools.jcli.services.dependencies.VersionResolver;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -13,14 +13,13 @@ import org.junit.jupiter.api.TestInstance;
 
 @Tag(TestTypes.INTEGRATION)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class MavenCentralRepositoryIntegrationTest {
+public class MavenCentralVersionResolverIntegrationTest {
 
   VersionResolver versionResolver;
 
   @BeforeAll
   void init() {
-    final var api = new MavenCentralApiImpl(new ObjectMapper());
-    versionResolver = new MavenCentralRepository(api);
+    versionResolver = new MavenCentralVersionResolver(new ObjectMapper());
   }
 
   @Test
