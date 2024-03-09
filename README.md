@@ -20,7 +20,3 @@ kotlin which would be needed for gradle.
 - Maven support for adding/removing dependencies ⏳
 - Maven support for configuring some "common" plugins ⏳
 - Maven support for deployable webapps ⏳
-- Gradle support for simple console app ⏳ 
-- Gradle support for adding/removing dependencies ⏳
-- Gradle support for configuring some default plugins ⏳
-- Gradle support for deployable webapps ⏳
