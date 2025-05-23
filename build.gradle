@@ -1,17 +1,23 @@
 plugins {
+    id 'java'
     id 'application'
+    id 'org.graalvm.buildtools.native' version '0.10.6'
 }
+
+
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testImplementation libs.junit.jupiter
-
-    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-
     implementation libs.guava
+    implementation 'info.picocli:picocli:4.7.7'
+
+    annotationProcessor 'info.picocli:picocli-codegen:4.7.7'
+
+    testImplementation libs.junit.jupiter
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 java {
@@ -26,4 +32,15 @@ application {
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+graalvmNative {
+    binaries {
+        main {
+            imageName = 'jcli'
+            mainClass = 'com.dieg0407.App'
+            debug = false
+            verbose = true
+        }
+    }
 }
