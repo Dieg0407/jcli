@@ -8,9 +8,9 @@ import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
 
 @Command(name = "new", description = "Creates a new project.")
-public class NewCommand implements Callable<Integer> {
+public class NewCommand extends GenericCommand implements Callable<Integer> {
 
-    @Parameters(index = "0", description = "The type of project to create.")
+    @Parameters(index = "0", description = "The type of project to create.", converter = ProjectTypeConverter.class)
     private ProjectType projectType;
 
     @Option(names = { "-n", "--name" }, description = "The name of the project.")
@@ -35,10 +35,5 @@ public class NewCommand implements Callable<Integer> {
         System.out.println("Version: " + version);
 
         return 0;
-    }
-
-    // internal types
-    public static enum ProjectType {
-        CONSOLE
     }
 }
