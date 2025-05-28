@@ -6,3 +6,4 @@ edition = "2024"
 [dependencies]
 clap = { version = "4.x", features = ["derive"] }
 regex = "1.8"
+dialoguer = "0.10.4"
