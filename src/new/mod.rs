@@ -1,6 +1,9 @@
+mod templates;
+
 use clap::{Args, Subcommand};
 use dialoguer::{Input, Select, theme::ColorfulTheme};
 use regex::Regex;
+use templates::create_maven_console_app;
 
 #[derive(Debug, Args)]
 pub struct NewCommand {
@@ -159,12 +162,13 @@ fn create_console_app(args: &ConsoleArgs) -> Result<(), String> {
         }
     };
 
-    println!("Creating console application with the following details:");
-    println!("Name: {}", name);
-    println!("Group ID: {}", group_id);
-    println!("Version: {}", version);
-    println!("Java Target: {}", java_target);
-    println!("Build Engine: {}", engine);
-
-    Ok(())
+    if engine != "maven" {
+        return Err("Currently, only Maven is supported for console applications.".to_string());
+    }
+    create_maven_console_app(templates::CreateConsole {
+        group_id,
+        version,
+        java_target,
+        name,
+    })
 }
