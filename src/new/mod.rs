@@ -1,10 +1,11 @@
 mod arguments;
 mod templates;
+mod validation;
 
 use arguments::{JavaProjectArgumentsProviders, default_java_arguments_providers};
 use clap::{Args, Subcommand};
-use regex::Regex;
 use templates::create_maven_console_app;
+use validation::{GROUP_ID_REGEX, VALID_BUILD_ENGINES, VALID_JAVA_VERSIONS, VERSION_REGEX};
 
 #[derive(Debug, Args)]
 pub struct NewCommand {
@@ -82,10 +83,7 @@ fn create_console_app(
             .map_err(|e| e.to_string())?,
     };
 
-    // Validate the group ID format
-    let group_id_regex = Regex::new(r"^[a-zA-Z][a-zA-Z0-9]*(\.[a-zA-Z][a-zA-Z0-9]*)*$")
-        .expect("Failed to compile regex for group ID validation");
-    if !group_id_regex.is_match(&group_id) {
+    if !GROUP_ID_REGEX.is_match(&group_id) {
         return Err("Group ID must be in the format com.example.myapp.".to_string());
     }
 
@@ -98,11 +96,7 @@ fn create_console_app(
             .map_err(|e| e.to_string())?,
     };
 
-    // Validate the version format
-    let version_regex =
-        Regex::new(r"^\d+\.\d+\.\d+$").expect("Failed to compile regex for version validation");
-
-    if !version_regex.is_match(&version) {
+    if !VERSION_REGEX.is_match(&version) {
         return Err("Version must be in the format X.Y.Z (e.g., 1.0.0).".to_string());
     }
 
@@ -110,7 +104,7 @@ fn create_console_app(
     let java_target = match &args.java_target {
         Some(target) => {
             // Validate the provided target version
-            if !["1.8", "11", "17", "21"].contains(&target.as_str()) {
+            if !VALID_JAVA_VERSIONS.contains(&target.as_str()) {
                 return Err(
                     "Invalid Java target version. Supported versions are 1.8, 11, 17, and 21."
                         .to_string(),
@@ -128,7 +122,7 @@ fn create_console_app(
     let engine = match &args.engine {
         Some(e) => {
             // Validate the provided engine
-            if !["maven", "gradle"].contains(&e.as_str()) {
+            if !VALID_BUILD_ENGINES.contains(&e.as_str()) {
                 return Err(
                     "Invalid build engine. Supported engines are maven and gradle.".to_string(),
                 );
