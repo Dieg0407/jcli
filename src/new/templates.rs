@@ -9,7 +9,17 @@ pub struct CreateConsole {
     pub name: String,
 }
 
-pub fn create_maven_console_app(args: CreateConsole) -> Result<(), String> {
+pub fn generate_console_app_files(
+    engine: &str,
+    console_arguments: CreateConsole,
+) -> Result<(), String> {
+    match engine {
+        "maven" => maven_console_files(console_arguments),
+        _ => Err(format!("Engine {} not supported yet!", engine)),
+    }
+}
+
+fn maven_console_files(args: CreateConsole) -> Result<(), String> {
     // check if pom already exists
     let pom_path = format!("{}/pom.xml", args.name);
     if Path::new(&pom_path).exists() {

@@ -4,7 +4,7 @@ mod validation;
 
 use arguments::{JavaProjectArgumentsProviders, default_java_arguments_providers};
 use clap::{Args, Subcommand};
-use templates::create_maven_console_app;
+use templates::{CreateConsole, generate_console_app_files};
 use validation::{GROUP_ID_REGEX, VALID_BUILD_ENGINES, VALID_JAVA_VERSIONS, VERSION_REGEX};
 
 #[derive(Debug, Args)]
@@ -45,9 +45,11 @@ pub struct ConsoleArgs {
 impl NewCommand {
     pub fn execute(&self) -> Result<(), String> {
         match &self.subcommand {
-            NewSubcommands::Console(args) => {
-                create_console_app(args, default_java_arguments_providers())
-            }
+            NewSubcommands::Console(args) => create_console_app(
+                args,
+                default_java_arguments_providers(),
+                generate_console_app_files,
+            ),
         }
     }
 }
@@ -55,6 +57,7 @@ impl NewCommand {
 fn create_console_app(
     args: &ConsoleArgs,
     arguments_provider: JavaProjectArgumentsProviders,
+    create_console_handler: fn(&str, CreateConsole) -> Result<(), String>,
 ) -> Result<(), String> {
     // Project name input with validation
     let name = match &args.name {
@@ -139,10 +142,13 @@ fn create_console_app(
         return Err("Currently, only Maven is supported for console applications.".to_string());
     }
 
-    create_maven_console_app(templates::CreateConsole {
-        group_id,
-        version,
-        java_target,
-        name,
-    })
+    create_console_handler(
+        &engine,
+        templates::CreateConsole {
+            group_id,
+            version,
+            java_target,
+            name,
+        },
+    )
 }
