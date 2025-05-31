@@ -1,5 +1,7 @@
 use std::path::Path;
 
+use dialoguer::console::style;
+
 pub struct CreateConsole {
     pub group_id: String,
     pub version: String,
@@ -69,7 +71,7 @@ pub fn create_maven_console_app(args: CreateConsole) -> Result<(), String> {
         args.java_target,
         args.java_target,
         args.java_target,
-        args.name
+        args.group_id
     );
     std::fs::write("pom.xml", pom_content).map_err(|e| e.to_string())?;
 
@@ -90,6 +92,37 @@ public class Main {{
 
     std::fs::write(format!("{}/Main.java", main_dir), main_file_content)
         .map_err(|e| e.to_string())?;
+
+    post_create_wrapper()?;
+
+    // write with dialoguer that the project was created
+    println!(
+        "{}\n{}",
+        style(format!("Project '{}' created successfully.", args.name)).bold(),
+        style("You can now run `mvn package` to build the project and `java -jar target/<artifactId>-<version>.jar` to run it.")
+            .bold()
+    );
+
+    Ok(())
+}
+
+// assumes we're on the folder where the pom.xml is created
+fn post_create_wrapper() -> Result<(), String> {
+    // check if mvn is installed
+
+    if std::process::Command::new("mvn")
+        .arg("--version")
+        .output()
+        .is_err()
+    {
+        return Err("Maven is not installed or not found in PATH.".to_string());
+    }
+
+    // execute wrapper
+    std::process::Command::new("mvn")
+        .arg("wrapper:wrapper")
+        .output()
+        .map_err(|e| format!("Failed to execute Maven wrapper: {}", e))?;
 
     Ok(())
 }
