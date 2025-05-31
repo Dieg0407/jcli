@@ -1,7 +1,8 @@
+mod arguments;
 mod templates;
 
+use arguments::{JavaProjectArgumentsProviders, default_java_arguments_providers};
 use clap::{Args, Subcommand};
-use dialoguer::{Input, Select, theme::ColorfulTheme};
 use regex::Regex;
 use templates::create_maven_console_app;
 
@@ -43,75 +44,67 @@ pub struct ConsoleArgs {
 impl NewCommand {
     pub fn execute(&self) -> Result<(), String> {
         match &self.subcommand {
-            NewSubcommands::Console(args) => create_console_app(args),
+            NewSubcommands::Console(args) => {
+                create_console_app(args, default_java_arguments_providers())
+            }
         }
     }
 }
 
-fn create_console_app(args: &ConsoleArgs) -> Result<(), String> {
+fn create_console_app(
+    args: &ConsoleArgs,
+    arguments_provider: JavaProjectArgumentsProviders,
+) -> Result<(), String> {
     // Project name input with validation
     let name = match &args.name {
         Some(name) => name.to_string(),
-        None => {
-            let name = Input::with_theme(&ColorfulTheme::default())
-                .with_prompt("Application name")
-                .validate_with(|input: &String| -> Result<(), &str> {
-                    if !input.chars().all(|c| c.is_alphanumeric() || c == '_') {
-                        Err("Only alphanumeric characters and underscores are allowed")
-                    } else {
-                        Ok(())
-                    }
-                })
-                .interact()
-                .map_err(|e| e.to_string())?;
-            name
-        }
+        None => arguments_provider
+            .name
+            .get_arguments()
+            .map_err(|e| e.to_string())?,
     };
+
+    // Check if the project name is valid
+    if name.is_empty()
+        || !name
+            .chars()
+            .all(|c| c.is_alphanumeric() || c == '_' || c == '-')
+    {
+        return Err("Project name must be alphanumeric and cannot be empty.".to_string());
+    }
 
     // Group ID input with validation
     let group_id = match &args.group_id {
         Some(id) => id.to_string(),
-        None => {
-            let group_id_regex = Regex::new(r"^[a-zA-Z][a-zA-Z0-9]*(\.[a-zA-Z][a-zA-Z0-9]*)*$")
-                .expect("Failed to compile regex for group ID validation");
-
-            let group_id = Input::with_theme(&ColorfulTheme::default())
-                .with_prompt("Group ID for Java package")
-                .validate_with(|input: &String| -> Result<(), &str> {
-                    if !group_id_regex.is_match(input) {
-                        Err("Invalid group ID format. It should be a valid Java package name")
-                    } else {
-                        Ok(())
-                    }
-                })
-                .interact()
-                .map_err(|e| e.to_string())?;
-            group_id
-        }
+        None => arguments_provider
+            .group_id
+            .get_arguments()
+            .map_err(|e| e.to_string())?,
     };
+
+    // Validate the group ID format
+    let group_id_regex = Regex::new(r"^[a-zA-Z][a-zA-Z0-9]*(\.[a-zA-Z][a-zA-Z0-9]*)*$")
+        .expect("Failed to compile regex for group ID validation");
+    if !group_id_regex.is_match(&group_id) {
+        return Err("Group ID must be in the format com.example.myapp.".to_string());
+    }
 
     // Version input with validation and default value
     let version = match &args.version {
         Some(v) => v.to_string(),
-        None => {
-            let version_regex = Regex::new(r"^\d+\.\d+\.\d+$")
-                .expect("Failed to compile regex for version validation");
-
-            let version = Input::with_theme(&ColorfulTheme::default())
-                .with_prompt("Version")
-                .default("1.0.0".to_string())
-                .validate_with(|input: &String| -> Result<(), &str> {
-                    if !version_regex.is_match(input) {
-                        Err("Invalid version format. It should be in the format X.Y.Z (e.g., 1.0.0)")
-                    } else {
-                        Ok(())
-                    }
-                })
-                .interact()
-                .map_err(|e| e.to_string())?;
-            version
-        }
+        None => arguments_provider
+            .version
+            .get_arguments()
+            .map_err(|e| e.to_string())?,
     };
+
+    // Validate the version format
+    let version_regex =
+        Regex::new(r"^\d+\.\d+\.\d+$").expect("Failed to compile regex for version validation");
+
+    if !version_regex.is_match(&version) {
+        return Err("Version must be in the format X.Y.Z (e.g., 1.0.0).".to_string());
+    }
 
     // Java target version selection
     let java_target = match &args.java_target {
@@ -125,17 +118,10 @@ fn create_console_app(args: &ConsoleArgs) -> Result<(), String> {
             }
             target.to_string()
         }
-        None => {
-            let java_versions = &["1.8", "11", "17", "21"];
-            let selection = Select::with_theme(&ColorfulTheme::default())
-                .with_prompt("Select Java target version")
-                .default(3) // Default to Java 21 (index 3)
-                .items(java_versions)
-                .interact()
-                .map_err(|e| e.to_string())?;
-
-            java_versions[selection].to_string()
-        }
+        None => arguments_provider
+            .java_target
+            .get_arguments()
+            .map_err(|e| e.to_string())?,
     };
 
     // Build engine selection
@@ -149,22 +135,16 @@ fn create_console_app(args: &ConsoleArgs) -> Result<(), String> {
             }
             e.to_string()
         }
-        None => {
-            let options = &["maven", "gradle"];
-            let selection = Select::with_theme(&ColorfulTheme::default())
-                .with_prompt("Select build engine")
-                .default(0) // Default to maven (first option)
-                .items(options)
-                .interact()
-                .map_err(|e| e.to_string())?;
-
-            options[selection].to_string()
-        }
+        None => arguments_provider
+            .engine
+            .get_arguments()
+            .map_err(|e| e.to_string())?,
     };
 
     if engine != "maven" {
         return Err("Currently, only Maven is supported for console applications.".to_string());
     }
+
     create_maven_console_app(templates::CreateConsole {
         group_id,
         version,
